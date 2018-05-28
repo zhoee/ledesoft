@@ -126,7 +126,8 @@ function save(){
 <div class="content">
 	<span class="col" style="line-height:30px;width:700px">
 	EasyExplorer是koolshare小宝开发的，支持跨设备、点对点文件传输同步工具。<br />
-	你需要先到<a id="gfw_number" href="https://ddns.to" target="_blank"> https://ddns.to </a>注册，然后在本插件内配置Token和本地同步文件夹。<br />
+	你需要先到<a id="gfw_number" href="https://www.ddnsto.com" target="_blank">https://www.ddnsto.com </a>扫码登录获取token(令牌)，然后在本插件内配置Token和本地同步文件夹。<br />
+	<font color="#FF3300">注意：</font>因验证方式改变，原有Token和设置失效，最新插件需要您重新登录控制台获取Token并重新设置。
 </div>
 </div>
 
