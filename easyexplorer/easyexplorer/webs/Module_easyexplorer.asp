@@ -117,8 +117,10 @@ function save(){
 	  error: error,
 	  dataType: "json"
 	});
-	
-	//-------------- post Apps to dbus ---------------
+}
+
+function download_binary(){
+	window.open("http://firmware.koolshare.cn/binary/Easy-Explorer/");
 }
 </script>
 <div class="box">
@@ -143,7 +145,8 @@ $('#easyexplorer-fields').forms([
 { title: 'Token', name: 'easyexplorer_token', type: 'text', maxlen: 38, size: 38, value: Apps.easyexplorer_token },
 { title: '本地同步文件夹', name: 'easyexplorer_folder', type: 'text', size: 60, value: Apps.easyexplorer_folder || "/mnt/sda3/share" },
 { title: '开启DLNA解码器下载', name: 'easyexplorer_dlna', type: 'checkbox', value: ((Apps.easyexplorer_dlna == '1')? 1:0)},
-{ title: 'WEB控制台',  name: 'easyexplorer_web',text: ' &nbsp;&nbsp;<a href=http://' + location.hostname + ":8899" + '/ target="_blank"><u>http://'  + location.hostname + ":8899" + '</u></a>'}
+{ title: 'WEB控制台',  name: 'easyexplorer_web',text: ' &nbsp;&nbsp;<a href=http://' + location.hostname + ":8899" + '/ target="_blank"><u>http://'  + location.hostname + ":8899" + '</u></a>'},
+{ title: '相关链接', suffix: ' <button onclick="download_binary();" class="btn btn-danger">EasyExplorer全平台下载</button>' }
 ]);
 </script>
 </div>
