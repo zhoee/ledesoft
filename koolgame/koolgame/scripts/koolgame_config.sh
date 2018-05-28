@@ -263,13 +263,13 @@ flush_nat(){
 	# flush chromecast rule
 	kp_mode=`dbus get koolproxy_mode`
 	kp_enable=`iptables -t nat -L PREROUTING | grep KOOLPROXY |wc -l`
-	ss_chromecast=`uci -q get shadowsocks.@global[0].dns_53`
+	ss_chromecast=`dbus get ss_basic_chromecast`
 	ss_enable=`iptables -t nat -L SHADOWSOCKS 2>/dev/null |wc -l`
 	chromecast_nu=`iptables -t nat -L PREROUTING -v -n --line-numbers|grep "dpt:53"|awk '{print $1}'`
 	if [ "$kp_mode" != "2" ] || [ "$kp_enable" -eq 0 ]; then
 		[ -n "$chromecast_nu" ] && iptables -t nat -D PREROUTING $chromecast_nu >/dev/null 2>&1
 	else
-		if [ -z "$ss_chromecast" ] || [ "$ss_enable" -eq 0 ]; then
+		if [ "$ss_chromecast" == "0" ] || [ "$ss_enable" -eq 0 ]; then
 			[ -n "$chromecast_nu" ] && iptables -t nat -D PREROUTING $chromecast_nu >/dev/null 2>&1
 		fi
 	fi
@@ -282,20 +282,20 @@ flush_nat(){
 	ipset -F router >/dev/null 2>&1 && ipset -X router >/dev/null 2>&1
 
 	#remove_redundant_rule
-	ip_rule_exist=`/usr/sbin/ip rule show | grep "fwmark 0x7 lookup 310" | grep -c 310`
+	ip_rule_exist=`ip rule show | grep "fwmark 0x7 lookup 310" | grep -c 310`
 	if [ -n "ip_rule_exist" ];then
 		echo_date 清除重复的ip rule规则.
 		until [ "$ip_rule_exist" = 0 ]
 		do 
 			#ip rule del fwmark 0x07 table 310
-			/usr/sbin/ip rule del fwmark 0x07 table 310 pref 789
+			ip rule del fwmark 0x07 table 310 pref 789
 			ip_rule_exist=`expr $ip_rule_exist - 1`
 		done
 	fi
 
 	# remove_route_table
 	echo_date 删除ip route规则.
-	/usr/sbin/ip route del local 0.0.0.0/0 dev lo table 310 >/dev/null 2>&1
+	ip route del local 0.0.0.0/0 dev lo table 310 >/dev/null 2>&1
 }
 
 # creat ipset rules
@@ -433,8 +433,8 @@ apply_nat_rules(){
 	iptables -t nat -A KOOLGAME_GAM -p tcp -m set ! --match-set chnroute dst -j REDIRECT --to-ports 3333
 
 	#load_tproxy
-	/usr/sbin/ip rule add fwmark 0x07 table 310 pref 789
-	/usr/sbin/ip route add local 0.0.0.0/0 dev lo table 310
+	ip rule add fwmark 0x07 table 310 pref 789
+	ip route add local 0.0.0.0/0 dev lo table 310
 	# 创建游戏模式udp rule
 	iptables -t mangle -N KOOLGAME
 	# IP/cidr/白域名 白名单控制（不走koolgame）
@@ -482,7 +482,6 @@ chromecast(){
 	chromecast_nu=`iptables -t nat -L PREROUTING -v -n --line-numbers|grep "dpt:53"|awk '{print $1}'`
 	is_right_lanip=`iptables -t nat -L PREROUTING -v -n --line-numbers|grep "dpt:53" |grep "$lan_ipaddr"`
 	
-	uci set shadowsocks.@global[0].dns_53=1
 	if [ -z "$chromecast_nu" ]; then
 		iptables -t nat -A PREROUTING -p udp --dport 53 -j DNAT --to $lan_ipaddr >/dev/null 2>&1
 		echo_date $LOG1
@@ -495,7 +494,6 @@ chromecast(){
 			echo_date DNS劫持规则已经添加，跳过~
 		fi
 	fi
-	uci commit
 }
 # =======================================================================================================
 load_nat(){

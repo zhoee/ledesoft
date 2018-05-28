@@ -1,10 +1,11 @@
 #!/bin/sh
 
-MODULE=koolgame
-VERSION=1.0.3
-TITLE="游戏加速"
+MODULE="koolgame"
+VERSION="1.0.4"
+TITLE="koolgame 游戏加速"
 DESCRIPTION="小宝开发的游戏加速V2"
-HOME_URL=Module_koolgame.asp
+HOME_URL="Module_koolgame.asp"
+CHANGELOG="修复UDPblocked"
 
 # Check and include base
 DIR="$( cd "$( dirname "$BASH_SOURCE[0]" )" && pwd )"
